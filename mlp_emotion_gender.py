@@ -35,16 +35,8 @@ rvdess_emotions={
   '07':'disgust',
   '08':'surprised'
 }
-# savee_emotions={
-#   'n':'neutral',
-#   'c':'calm',
-#   'h':'happy',
-#   's':'sad',
-#   'a':'angry',
-#   'f':'fearful',
-#   'd':'disgust',
-#   'p':'surprised'
-# }
+
+
 tess_emotions={
   'neutral':'neutral',
   'happy':'happy',
@@ -57,46 +49,52 @@ tess_emotions={
 # Emotions to observe
 observed_emotions=['neutral','calm','happy','sad','angry','fearful', 'disgust','surprised']
 
+def gender_ravdess(g):
+    """Returns Gender Label"""
+    if int(g[0:2]) % 2 == 0:
+        return 'female'
+    else:
+        return 'male'
+
+def gender_tess(g):
+    """Returns Gender Label"""
+    if g == 'Y':
+        return 'female'
+    else:
+        return 'male'
+
 def load_data(test_size):
     x,y=[],[]
 
-    for file in glob.glob("./Dataset/ravdess/*.wav"):
+    for file in glob.glob("./Dataset/ravdess/*/Actor_*/*.wav"):
         file_name=os.path.basename(file)
-        emotion=rvdess_emotions[file_name.split("-")[2]]
+        emotion = rvdess_emotions[file_name.split("-")[2]] + '_' + gender_ravdess(file_name.split("-")[-1])
+        print(emotion)
 
-        if emotion not in observed_emotions:
-            continue
+        # if emotion not in observed_emotions:
+        #     continue
         feature=extract_feature(file, mfcc=True, chroma=True, mel=True)
         x.append(feature)
         y.append(emotion)
     
-    # for file in glob.glob("./Dataset/savee/*/*.wav"):
-    #     file_name=os.path.basename(file)
-    #     f=file_name[0]
-    #     # print(f)
-    #     emotion=savee_emotions[f]
-
-    #     if emotion not in observed_emotions:
-    #         continue
-    #     feature=extract_feature(file, mfcc=True, chroma=True, mel=True)
-    #     x.append(feature)
-    #     y.append(emotion)
 
     for file in glob.glob("./Dataset/tess/*.wav"):
         file_name=os.path.basename(file)
         f=file_name.split('_')[-1].split('.')[0]
-        emotion=tess_emotions[f]
+        emotion=tess_emotions[f] + '_' + gender_tess(file_name[0])
+        print(emotion)
 
-        if emotion not in observed_emotions:
-            continue
+        # if emotion not in observed_emotions:
+        #     continue
         feature=extract_feature(file, mfcc=True, chroma=True, mel=True)
         x.append(feature)
         y.append(emotion)
-    return train_test_split(np.array(x), y, test_size=test_size, train_size= 0.95,random_state=9)
+    
+    return train_test_split(np.array(x), y, test_size=test_size, train_size= 0.7,random_state=9)
 
 
 import time
-x_train,x_test,y_train,y_test=load_data(test_size=0.05)
+x_train,x_test,y_train,y_test=load_data(test_size=0.3)
 
 #Get the shape of the training and testing datasets
 print((x_train.shape[0], x_test.shape[0]), x_test.shape[1])
