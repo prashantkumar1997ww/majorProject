@@ -68,8 +68,9 @@ def load_data(test_size):
 
     for file in glob.glob("./Dataset/ravdess/*/Actor_*/*.wav"):
         file_name=os.path.basename(file)
+        print(file_name)
         emotion = rvdess_emotions[file_name.split("-")[2]] + '_' + gender_ravdess(file_name.split("-")[-1])
-        print(emotion)
+        # print(emotion)
 
         # if emotion not in observed_emotions:
         #     continue
@@ -80,9 +81,10 @@ def load_data(test_size):
 
     for file in glob.glob("./Dataset/tess/*.wav"):
         file_name=os.path.basename(file)
+        print(file_name)
         f=file_name.split('_')[-1].split('.')[0]
         emotion=tess_emotions[f] + '_' + gender_tess(file_name[0])
-        print(emotion)
+        # print(emotion)
 
         # if emotion not in observed_emotions:
         #     continue
@@ -90,11 +92,11 @@ def load_data(test_size):
         x.append(feature)
         y.append(emotion)
     
-    return train_test_split(np.array(x), y, test_size=test_size, train_size= 0.7,random_state=9)
+    return train_test_split(np.array(x), y, test_size=test_size, train_size= 0.8,random_state=9)
 
 
 import time
-x_train,x_test,y_train,y_test=load_data(test_size=0.3)
+x_train,x_test,y_train,y_test=load_data(test_size=0.2)
 
 #Get the shape of the training and testing datasets
 print((x_train.shape[0], x_test.shape[0]), x_test.shape[1])
