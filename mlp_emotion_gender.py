@@ -127,4 +127,10 @@ from sklearn.metrics import confusion_matrix
 matrix = confusion_matrix(y_test,y_pred)
 print (matrix)
 
-
+filename = 'mlp_emotion_gender.h5'
+pickle.dump(model, open(filename, 'wb'))
+ 
+# load the model from disk
+loaded_model = pickle.load(open(filename, 'rb'))
+result = loaded_model.score(x_test, y_test)
+print(result)
